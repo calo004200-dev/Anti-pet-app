@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  pets      Pet[]
+}
+
+model Pet {
+  id            String   @id @default(cuid())
+  name          String
+  type          String   // dog, cat, etc.
+  breed         String?
+  photo         String?  // local path or base64
+  rescueContact String
+  isLost        Boolean  @default(false)
+  lastSeenLocation String?
+  ownerId       String
+  owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
